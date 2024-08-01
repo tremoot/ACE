@@ -78,12 +78,9 @@ function tfswitch_install() {
 }
 
 function terraform_install() {
-  if [[ ! -f "${HOME}/bin/terraform" ]] || [[ "$("${HOME}/bin/terraform" --version | head -n 1 | awk '{print $2}')" != "v1.2.4" ]]; then
+  if ! hash terraform 2>/dev/null; then
     echo "Installing terraform"
     {
-      if [[ -f "${HOME}/bin/terraform" ]]; then
-        rm "${HOME}/bin/terraform"
-      fi
       tfswitch 1.2.4
     } > /dev/null
   fi
