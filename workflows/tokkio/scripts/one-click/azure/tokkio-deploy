@@ -236,20 +236,20 @@ function prepare_deploy_dir() {
 
 function terraform_init() {
   _tf_dir="${1}"
-  "${HOME}/bin/terraform" -chdir="${_tf_dir}" init -reconfigure -backend-config=tf-backend.json > /dev/null
+  terraform -chdir="${_tf_dir}" init -reconfigure -backend-config=tf-backend.json > /dev/null
 }
 
 function terraform_plan() {
   _tf_dir="${1}"
-  "${HOME}/bin/terraform" -chdir="${_tf_dir}" plan -out=tf-plan -var-file=tf-variables.json > /dev/null
-  "${HOME}/bin/terraform" -chdir="${_tf_dir}" show tf-plan
+  terraform -chdir="${_tf_dir}" plan -out=tf-plan -var-file=tf-variables.json > /dev/null
+  terraform -chdir="${_tf_dir}" show tf-plan
 }
 
 function terraform_plan_destroy() {
   _tf_dir="${1}"
-  if [[ "$("${HOME}/bin/terraform" -chdir="${_tf_dir}" state list | wc -l)" != "0" ]]; then
-    "${HOME}/bin/terraform" -chdir="${_tf_dir}" plan -destroy -out=tf-plan -var-file=tf-variables.json > /dev/null
-    "${HOME}/bin/terraform" -chdir="${_tf_dir}" show tf-plan
+  if [[ "$(terraform -chdir="${_tf_dir}" state list | wc -l)" != "0" ]]; then
+    terraform -chdir="${_tf_dir}" plan -destroy -out=tf-plan -var-file=tf-variables.json > /dev/null
+    terraform -chdir="${_tf_dir}" show tf-plan
   else
     return 1
   fi
@@ -258,13 +258,13 @@ function terraform_plan_destroy() {
 function terraform_apply() {
   _tf_dir="${1}"
   if [[ -f "${_tf_dir}/tf-plan" ]]; then
-    "${HOME}/bin/terraform" -chdir="${_tf_dir}" apply tf-plan
+    terraform -chdir="${_tf_dir}" apply tf-plan
   fi
 }
 
 function terraform_output() {
   _tf_dir="${1}"
-  "${HOME}/bin/terraform" -chdir="${_tf_dir}" output
+  terraform -chdir="${_tf_dir}" output
 }
 
 function handle_mode() {
