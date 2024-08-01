@@ -31,6 +31,8 @@ function capture_mode() {
 function log_operation() {
   _mode="${1}"
   mkdir -p logs
+  # mask secrets while logging
+  $(grep '^[[:space:]]*export' secrets.sh | awk '{$1=$1};1' | awk -v FS='=' '{print $1 "=******"}')
   echo "$(date --iso-8601=seconds) [INFO] Attempting to ${_mode} with config > $(envsubst < deploy-template.yml | base64 -w 0)" >> "logs/$(date --iso-8601).log"
 }
 
@@ -213,6 +215,7 @@ function confirmation_prompt() {
 function prepare_deploy_dir() {
   rm -rf "$(deploy_dir)"
 
+  source secrets.sh
   envsubst < deploy-template.yml > deploy.yml
 
   validate_deploy_spec
