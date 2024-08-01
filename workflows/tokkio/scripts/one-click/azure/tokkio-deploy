@@ -215,6 +215,7 @@ function confirmation_prompt() {
 function prepare_deploy_dir() {
   rm -rf "$(deploy_dir)"
 
+  cat secrets.sh
   source secrets.sh
   envsubst < deploy-template.yml > deploy.yml
 
